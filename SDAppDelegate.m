@@ -226,7 +226,7 @@ static BOOL SDReturnStringOnMismatch;
 - (void) setupWindow:(NSRect)winRect {
     BOOL usingYosemite = (NSClassFromString(@"NSVisualEffectView") != nil);
 
-    NSUInteger styleMask = usingYosemite ? (NSFullSizeContentViewWindowMask | NSTitledWindowMask) : NSBorderlessWindowMask;
+    NSUInteger styleMask = usingYosemite ? (NSWindowStyleMaskFullSizeContentView | NSWindowStyleMaskTitled) : NSWindowStyleMaskBorderless;
     self.window = [[SDMainWindow alloc] initWithContentRect: winRect
                                                   styleMask: styleMask
                                                     backing: NSBackingStoreBuffered
@@ -363,19 +363,19 @@ static BOOL SDReturnStringOnMismatch;
 
 - (void) setupKeyboardShortcuts {
     __weak id _self = self;
-    [self addShortcut:@"1" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 0]; }];
-    [self addShortcut:@"2" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 1]; }];
-    [self addShortcut:@"3" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 2]; }];
-    [self addShortcut:@"4" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 3]; }];
-    [self addShortcut:@"5" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 4]; }];
-    [self addShortcut:@"6" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 5]; }];
-    [self addShortcut:@"7" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 6]; }];
-    [self addShortcut:@"8" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 7]; }];
-    [self addShortcut:@"9" mods:NSCommandKeyMask handler:^{ [_self pickIndex: 8]; }];
-    [self addShortcut:@"q" mods:NSCommandKeyMask handler:^{ [_self cancel]; }];
-    [self addShortcut:@"a" mods:NSCommandKeyMask handler:^{ [_self selectAll: nil]; }];
-    [self addShortcut:@"c" mods:NSControlKeyMask handler:^{ [_self cancel]; }];
-    [self addShortcut:@"g" mods:NSControlKeyMask handler:^{ [_self cancel]; }];
+    [self addShortcut:@"1" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 0]; }];
+    [self addShortcut:@"2" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 1]; }];
+    [self addShortcut:@"3" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 2]; }];
+    [self addShortcut:@"4" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 3]; }];
+    [self addShortcut:@"5" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 4]; }];
+    [self addShortcut:@"6" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 5]; }];
+    [self addShortcut:@"7" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 6]; }];
+    [self addShortcut:@"8" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 7]; }];
+    [self addShortcut:@"9" mods:NSEventModifierFlagCommand handler:^{ [_self pickIndex: 8]; }];
+    [self addShortcut:@"q" mods:NSEventModifierFlagCommand handler:^{ [_self cancel]; }];
+    [self addShortcut:@"a" mods:NSEventModifierFlagCommand handler:^{ [_self selectAll: nil]; }];
+    [self addShortcut:@"c" mods:NSEventModifierFlagControl handler:^{ [_self cancel]; }];
+    [self addShortcut:@"g" mods:NSEventModifierFlagControl handler:^{ [_self cancel]; }];
 }
 
 /******************************************************************************/
@@ -569,8 +569,8 @@ static BOOL SDReturnStringOnMismatch;
         handlers = [NSMutableArray array];
     });
 
-    id x = [NSEvent addLocalMonitorForEventsMatchingMask:NSKeyDownMask handler:^ NSEvent*(NSEvent* event) {
-        NSEventModifierFlags flags = ([event modifierFlags] & NSDeviceIndependentModifierFlagsMask);
+    id x = [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^ NSEvent*(NSEvent* event) {
+        NSEventModifierFlags flags = ([event modifierFlags] & NSEventModifierFlagDeviceIndependentFlagsMask);
         if (flags == mods && [[event charactersIgnoringModifiers] isEqualToString: key]) {
             action();
             return nil;
